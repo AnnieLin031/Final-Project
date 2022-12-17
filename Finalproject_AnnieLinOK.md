@@ -117,41 +117,25 @@ get our dreamy dataset (icd_cm_n)!
 Let’s compare the difference. This is the original dataset (BEFORE):
 
 ``` r
-head(icd_cm)
+head(icd_cm[1:8],3)
 #>   icd9cm icd10cm flags approximate no_map combination scenario choice_list
 #> 1     10    A000     0           0      0           0        0           0
 #> 2     11    A001     0           0      0           0        0           0
 #> 3     19    A009     0           0      0           0        0           0
-#> 4     20   A0100 10000           1      0           0        0           0
-#> 5     21    A011     0           0      0           0        0           0
-#> 6     22    A012     0           0      0           0        0           0
-#>   icd9cm_n icd10cm_n
-#> 1    001.0     A00.0
-#> 2    001.1     A00.1
-#> 3    001.9     A00.9
-#> 4    002.0    A01.00
-#> 5    002.1     A01.1
-#> 6    002.2     A01.2
 ```
 
 And this is our corrected dataset (AFTER):
 
 ``` r
-head(icd_cm_final)
+head(icd_cm_final,3)
 #>   icd9cm_n icd10cm_n                      ICD9 Description
 #> 1    001.0     A00.0        Cholera due to vibrio cholerae
 #> 2    001.1     A00.1 Cholera due to vibrio cholerae el tor
 #> 3    001.9     A00.9                  Cholera, unspecified
-#> 4    002.0    A01.00                         Typhoid fever
-#> 5    002.1     A01.1                   Paratyphoid fever A
-#> 6    002.2     A01.2                   Paratyphoid fever B
-#>                                    ICD10 Description              matching
-#> 1 Cholera due to Vibrio cholerae 01, biovar cholerae      Exactly matching
-#> 2    Cholera due to Vibrio cholerae 01, biovar eltor      Exactly matching
-#> 3                               Cholera, unspecified      Exactly matching
-#> 4                         Typhoid fever, unspecified Approxiately matching
-#> 5                                Paratyphoid fever A      Exactly matching
-#> 6                                Paratyphoid fever B      Exactly matching
+#>                                    ICD10 Description         matching
+#> 1 Cholera due to Vibrio cholerae 01, biovar cholerae Exactly matching
+#> 2    Cholera due to Vibrio cholerae 01, biovar eltor Exactly matching
+#> 3                               Cholera, unspecified Exactly matching
 ```
 
 Finally, we can start to search the corresponding ICD-10 codes! For
@@ -293,6 +277,7 @@ I would like to apply machine learning skills in part 2.
 ## Appendix
 
 ``` r
+library(latexpdf)
 library(tidyverse)
 library(dslabs)
 library(stringr) 
@@ -449,8 +434,8 @@ icd_cm_k$matching = ifelse(icd_cm_k$flags == 10000, "Approxiately matching",
 head(icd_cm_k)
 icd_cm_final = icd_cm_k[-c(1:3)]
 head(icd_cm_final)
-head(icd_cm)
-head(icd_cm_final)
+head(icd_cm[1:8],3)
+head(icd_cm_final,3)
 icd_cm_final |>
   filter(icd9cm_n %in% c("E93.00","003.1","032.0")) |> 
   summarise(icd9 = icd9cm_n, icd10 = icd10cm_n, footnote = matching)
